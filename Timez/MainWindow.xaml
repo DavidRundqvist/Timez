@@ -1,0 +1,36 @@
+﻿<Window x:Class="Timez.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Timez"
+        xmlns:local1="clr-namespace:PanAndZoom"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800"
+        
+        SizeChanged="Window_SizeChanged" WindowState="Maximized">
+    
+
+    <!--<ScrollViewer
+        x:Name="scroller"
+        CanContentScroll="True"
+        VerticalScrollBarVisibility="Visible"
+        HorizontalScrollBarVisibility="Visible"
+        >-->
+
+    <local1:ZoomBorder x:Name="border" ClipToBounds="True" Background="Gray">
+
+
+        <Canvas Background="Beige" x:Name="content"></Canvas>
+        <!--<StackPanel >
+                <Canvas x:Name="content"></Canvas>
+                <Button>Hej</Button>
+                
+            </StackPanel>-->
+
+    </local1:ZoomBorder>
+
+    <!--</ScrollViewer>-->
+
+
+</Window>

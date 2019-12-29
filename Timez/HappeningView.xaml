@@ -1,0 +1,16 @@
+﻿<UserControl x:Class="Timez.HappeningView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Timez"
+             mc:Ignorable="d" 
+             Width="100"
+             d:DesignHeight="100" 
+             d:DataContext="{d:DesignInstance Type=local:DesignHappening, IsDesignTimeCreatable=True}">
+    <StackPanel ToolTip="{Binding Name}">
+        <Ellipse x:Name="Circle" Fill="Transparent" Height="20" Width="20" StrokeThickness="5" Stroke="Black"></Ellipse>
+        <TextBlock Margin="10" TextAlignment="Center" HorizontalAlignment="Center" MaxWidth="90" TextWrapping="Wrap" FontFamily="Goudy Old Style" Text="{Binding Date}"></TextBlock>
+        <TextBlock TextAlignment="Center" HorizontalAlignment="Center" MaxWidth="90" TextWrapping="Wrap" FontFamily="Charlemagne Std" Text="{Binding Name}"></TextBlock>
+    </StackPanel>
+</UserControl>
