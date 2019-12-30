@@ -10,7 +10,6 @@
              d:DataContext="{d:DesignInstance Type=local:DesignParticipant, IsDesignTimeCreatable=True}"
              >
     <Grid>
-        <TextBlock TextAlignment="Center" HorizontalAlignment="Center" MaxWidth="90" TextWrapping="Wrap" FontFamily="Charlemagne Std" Text="{Binding Name}"></TextBlock>
-            
+        <TextBlock TextDecorations="Underline" TextAlignment="Right" HorizontalAlignment="Right" MaxWidth="90" TextWrapping="Wrap" FontFamily="Charlemagne Std" Text="{Binding Name}"></TextBlock>
     </Grid>
 </UserControl>

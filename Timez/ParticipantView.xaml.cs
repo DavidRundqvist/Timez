@@ -22,5 +22,21 @@ namespace Timez
         {
             InitializeComponent();
         }
+
+        Point _position;
+
+        public Point Position {
+            set {
+                _position = value;
+                var cx = Width / 2; // (double)Circle.GetValue(Canvas.LeftProperty);
+                var cy = 10; // (double)Circle.GetValue(Canvas.TopProperty);
+
+                this.SetValue(Canvas.LeftProperty, value.X - cx);
+                this.SetValue(Canvas.TopProperty, value.Y - cy);
+            }
+            get {
+                return _position;
+            }
+        }
     }
 }

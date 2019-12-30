@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -35,33 +37,78 @@ namespace Timez
             var msPerPixel = durationMS / availableWidth;
             var pixelPerMs = 1 / msPerPixel;
 
+            var participantRows = _source.Participants.Select((participant, index) =>
+                new { Participant = participant, Y = (2 * index + 1) * halfRowHeight })
+                .ToDictionary(a => a.Participant, a => a.Y);
 
-            for (var iIndex = 0; iIndex < _source.Participants.Length; iIndex++ )
+
+
+
+            // Create participant views
+            var participantViews = _source.Participants.Select(p =>
             {
-                var participant = _source.Participants[iIndex];
-                var y = (2 * iIndex + 1) * halfRowHeight;
-
-                var pv = new ParticipantView() { DataContext = participant };
-                pv.SetValue(Canvas.LeftProperty, 25.0d);
-                pv.SetValue(Canvas.TopProperty, y + 25);
-
-                _target.Children.Add(pv);
+                var result = new ParticipantView() { DataContext = p };
+                result.Position = new System.Windows.Point(25, participantRows[p]);
+                return result;
+            });
 
 
-                foreach(var happening in participant.Happenings)
+            // Create happening views
+            var happeningViews = _source.Happenings.Select(happening =>
+            {
+                var happeningView = new HappeningView() { Happening = happening };
+                var x = (happening.Occasion - start).TotalMilliseconds * pixelPerMs + margin + 100;
+                var y = (happening.Participants.Select(p => participantRows[p])).Average();
+                happeningView.Position = new System.Windows.Point(x, y);
+                return (happening, happeningView);
+            }).ToDictionary(h => h.happening, h => h.happeningView);
+
+
+            // Create edges between happenings
+            var edges = _source.Participants.SelectMany(p =>
+            {
+                var happenings = p.Happenings;
+                if (happenings.Count <= 1)
+                    return Enumerable.Empty<UIElement>();
+
+                var happeningPairs = happenings.Zip(happenings.Skip(1), (h1, h2) => (H1: happeningViews[h1], H2: happeningViews[h2]));
+                var edges = happeningPairs.Select(pair =>
                 {
-                    var x = (happening.Occasion - start).TotalMilliseconds * pixelPerMs + margin + 100;
+                    var line = new Line();
+                    var p1 = pair.H1.Position;
+                    var p2 = pair.H2.Position;
 
-                    var happeningView = new HappeningView() { DataContext = happening };
+                    line.X1 = p1.X;
+                    line.Y1 = p1.Y;
+                    line.X2 = p2.X;
+                    line.Y2 = p2.Y;
+                    line.Stroke = Brushes.Black;
+                    line.StrokeThickness = 2;
+                    return line;
+                });
 
-                    happeningView.SetValue(Canvas.LeftProperty, x - happeningView.Width / 2);
-                    happeningView.SetValue(Canvas.TopProperty, y);
-
-                    _target.Children.Add(happeningView);
-                }
+                return edges;
+            });
 
 
+
+
+
+
+            // Update target
+            foreach (var v in happeningViews.Values) {
+                _target.Children.Add(v);
             }
+            foreach(var p in participantViews)
+            {
+                _target.Children.Add(p);
+            }
+            foreach(var e in edges)
+            {
+                _target.Children.Add(e);
+            }
+
+
 
         }
     }
