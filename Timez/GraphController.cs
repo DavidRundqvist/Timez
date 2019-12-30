@@ -64,28 +64,58 @@ namespace Timez
             }).ToDictionary(h => h.happening, h => h.happeningView);
 
 
+            IEnumerable<Line> CreateEdge(HappeningView h1, HappeningView h2)
+            {
+                Line CreateEdge(Point p1, Point p2)
+                {
+                    return new Line
+                    {
+                        X1 = p1.X,
+                        Y1 = p1.Y,
+                        X2 = p2.X,
+                        Y2 = p2.Y,
+                        Stroke = Brushes.Black,
+                        StrokeThickness = 2
+                    };
+                }
+
+                var p1 = h1.Position;
+                var p2 = h2.Position;
+
+                if (p1.Y == p2.Y) {
+                    // happenings on same row
+                    yield return CreateEdge(p1, p2); 
+                } else {
+                    // happenings on different rows
+                    var deltaY = Math.Abs(p1.Y - p2.Y);
+                    var deltaX = deltaY / 5;
+                    var cutOffPoint = new Point(p2.X - deltaX, p1.Y);
+
+                    if (p1.X > cutOffPoint.X)
+                    {
+                        // Just connect the nodes with a single line
+                        yield return CreateEdge(p1, p2);
+                    } else {
+                        // Connect the nodes with two lines
+                        yield return CreateEdge(p1, cutOffPoint);
+                        yield return CreateEdge(cutOffPoint, p2);
+                    }
+
+                }
+
+
+            }
+
+
             // Create edges between happenings
             var edges = _source.Participants.SelectMany(p =>
             {
                 var happenings = p.Happenings;
-                if (happenings.Count <= 1)
+                if (happenings.Length <= 1)
                     return Enumerable.Empty<UIElement>();
 
                 var happeningPairs = happenings.Zip(happenings.Skip(1), (h1, h2) => (H1: happeningViews[h1], H2: happeningViews[h2]));
-                var edges = happeningPairs.Select(pair =>
-                {
-                    var line = new Line();
-                    var p1 = pair.H1.Position;
-                    var p2 = pair.H2.Position;
-
-                    line.X1 = p1.X;
-                    line.Y1 = p1.Y;
-                    line.X2 = p2.X;
-                    line.Y2 = p2.Y;
-                    line.Stroke = Brushes.Black;
-                    line.StrokeThickness = 2;
-                    return line;
-                });
+                var edges = happeningPairs.SelectMany(pair => CreateEdge(pair.H1, pair.H2));
 
                 return edges;
             });

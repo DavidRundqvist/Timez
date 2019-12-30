@@ -22,8 +22,15 @@ namespace Timez
 
             foreach(var involved in Participants)
             {
-                involved.Happenings.Add(this);
+                //involved._happenings.Add(this);
             }
+        }
+
+        public Happening(string name, string occassion, params Participant[] participants) 
+        {
+            Name = name;
+            Occasion = DateTime.Parse(occassion);
+            Participants = participants.ToList();
         }
     }
 }
