@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Media;
 
 namespace Timez
 {
@@ -11,9 +12,15 @@ namespace Timez
         public string Name { get; }
 
         public Happening[] Happenings => _happenings.OrderBy(h => h.Occasion).ToArray();
-        public Participant(string name)
+
+        public Color Color { get; }
+
+        public string ColorString => Color.ToString();
+
+        public Participant(string name, Color color)
         {
             Name = name;
+            Color = color;
         }
 
         public Participant Happened(string name, string occassion, params Participant[] togetherWith)
