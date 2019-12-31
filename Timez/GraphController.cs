@@ -13,6 +13,8 @@ namespace Timez
     {
         TimeLines _source;
         Canvas _target;
+        double? _pixelSpacing = null;
+
 
         public GraphController(TimeLines source, Canvas target)
         {
@@ -20,22 +22,43 @@ namespace Timez
             _target = target;
         }
 
+        public void ChangeScale(float scaleFactor)
+        {
+            _pixelSpacing *= scaleFactor;
+            UpdateTarget();
+        }
+
 
         public void UpdateTarget()
         {
             _target.Children.Clear();
 
-            var halfRowHeight = _target.ActualHeight / (2 * _source.Participants.Length);
+            if (_source.Happenings.Length <= 1)
+                return;
 
             var start = _source.Start;
             var end = _source.End;
+            var happenings = _source.Happenings;
+            var halfRowHeight = 150;
+            var participantsColumnWidth = 150;
 
-            var margin = 50;
-            var availableWidth = _target.ActualWidth - 2 * margin - 150;
 
-            var durationMS = (end - start).TotalMilliseconds;
-            var msPerPixel = durationMS / availableWidth;
-            var pixelPerMs = 1 / msPerPixel;
+            if (!_pixelSpacing.HasValue)  {
+                var totalTimeSpan = (end - start).TotalSeconds;
+                var startWidth = _target.ActualWidth - participantsColumnWidth - 50;
+                // start with a pixelspacing that shows the whole graph
+                _pixelSpacing = startWidth / totalTimeSpan;
+            }
+
+
+
+
+
+
+
+            _target.Width = (end - start).TotalSeconds * _pixelSpacing.Value + participantsColumnWidth + 50;
+
+            
 
             var participantRows = _source.Participants.Select((participant, index) =>
                 new { Participant = participant, Y = (2 * index + 1) * halfRowHeight })
@@ -57,59 +80,12 @@ namespace Timez
             var happeningViews = _source.Happenings.Select(happening =>
             {
                 var happeningView = new HappeningView() { Happening = happening };
-                var x = (happening.Occasion - start).TotalMilliseconds * pixelPerMs + margin + 100;
+                var x = (happening.Occasion - start).TotalSeconds * _pixelSpacing.Value + participantsColumnWidth;
                 var y = (happening.Participants.Select(p => participantRows[p])).Average();
                 happeningView.Position = new Point(x, y);
                 return (happening, happeningView);
             }).ToDictionary(h => h.happening, h => h.happeningView);
 
-
-            IEnumerable<Line> CreateEdge(HappeningView h1, HappeningView h2)
-            {
-                Line CreateEdge(Point p1, Point p2)
-                {
-                    return new Line
-                    {
-                        X1 = p1.X,
-                        Y1 = p1.Y,
-                        X2 = p2.X,
-                        Y2 = p2.Y,
-                        Stroke = Brushes.Black,
-                        StrokeThickness = 2
-                    };
-                }
-
-                var p1 = h1.Position;
-                var p2 = h2.Position;
-
-                if (p1.Y == p2.Y)
-                {
-                    // happenings on same row
-                    yield return CreateEdge(p1, p2);
-                }
-                else
-                {
-                    // happenings on different rows
-                    var deltaY = Math.Abs(p1.Y - p2.Y);
-                    var deltaX = deltaY / 5;
-                    var cutOffPoint = new Point(p2.X - deltaX, p1.Y);
-
-                    if (p1.X > cutOffPoint.X)
-                    {
-                        // Just connect the nodes with a single line
-                        yield return CreateEdge(p1, p2);
-                    }
-                    else
-                    {
-                        // Connect the nodes with two lines
-                        yield return CreateEdge(p1, cutOffPoint);
-                        yield return CreateEdge(cutOffPoint, p2);
-                    }
-
-                }
-
-
-            }
 
             // Make an array containing Bezier curve points and control points.
             Point[] MakeCurvePoints(Point[] points, double tension)
@@ -160,15 +136,12 @@ namespace Timez
 
 
 
-        // Create edges between happenings
-        var edges = _source.Participants.Select(p =>
+            // Create edges between happenings
+            var edges = _source.Participants.Select(p =>
             {
                 var happenings = p.Happenings;
                 if (happenings.Length <= 1)
                     return null;
-
-                //var happeningPairs = happenings.Zip(happenings.Skip(1), (h1, h2) => (H1: happeningViews[h1], H2: happeningViews[h2]));
-                //var edges = happeningPairs.SelectMany(pair => CreateEdge(pair.H1, pair.H2));
 
                 var points = happenings.Select(h => happeningViews[h].Position).ToArray(); ;
                 var bezierPoints = MakeCurvePoints(points, 0.2f);
@@ -180,30 +153,6 @@ namespace Timez
                 path.Data = new PathGeometry(new[] { new PathFigure(bezierPoints.First(), segments, false) });
 
                 return path;
-
-                /*
-                 * <Path Stroke="Black" StrokeThickness="10"
-                Canvas.Top="0">
-                <Path.Data>
-                <PathGeometry>
-                <PathGeometry.Figures>
-                <PathFigureCollection>
-                <PathFigure StartPoint="0,0">
-                <PathFigure.Segments>
-                <PathSegmentCollection>
-                <PolyBezierSegment Points="20,0 20,20 -20,80 -20,100 0,100" />
-                </PathSegmentCollection>
-                </PathFigure.Segments>
-                </PathFigure>
-                </PathFigureCollection>
-                </PathGeometry.Figures>
-                </PathGeometry>
-                </Path.Data>
-                </Path*/
-
-
-
-                //return edges;
             }).Where(e => e != null);
 
 

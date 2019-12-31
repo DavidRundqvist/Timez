@@ -57,18 +57,22 @@ namespace Timez
                 .Happened("Flyttar till Linköping", "2001-08-01")
                 .Happened("Börjar jobba på Sectra", "2006-05-01")
                 .Happened("David och Darja träffas","2004-06-19", darja)
-                .Happened("Vårdinge folkhögskola", "2015-09-01");
+                .Happened("Vårdinge folkhögskola", "2015-09-01")
+                .Happened("Idag", "2019-12-31");
 
             darja
                 .Happened("Föds", "1985-08-09")
                 .Happened("Flyttar till Liivalaia", "2000-09-23")
                 .Happened("David och Darja flyttar ihop", "2007-02-01", david)
-                .Happened("Börjar jobba på universitetet", "2011-06-01");
+                .Happened("Börjar jobba på universitetet", "2011-06-01")
+                .Happened("Idag", "2019-12-31");
 
             alva
-                .Happened("Föds", "2017-05-24");
+                .Happened("Föds", "2017-05-24")
+                .Happened("Börjar på Linblomman", "2018-10-24")
+                .Happened("Idag", "2019-12-31");
 
-               
+
 
             return new TimeLines(david, darja, alva);
         }
