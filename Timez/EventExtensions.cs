@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Timez
 {
-    public static class HappeningExtensions
+    public static class EventExtensions
     {
-        public static IEnumerable<TimeSpan> GetPeriods(this IEnumerable<Happening> self)
+        public static IEnumerable<TimeSpan> GetPeriods(this IEnumerable<Event> self)
         {
             self = self.ToArray();
 

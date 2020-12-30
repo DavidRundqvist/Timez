@@ -10,10 +10,10 @@ namespace Timez
 
         public Participant[] Participants { get; } = new Participant[0];
 
-        public Happening[] Happenings => Participants.SelectMany(i => i.Happenings).Distinct().OrderBy(h => h.Occasion).ToArray();
+        public Event[] Events => Participants.SelectMany(i => i.Events).Distinct().OrderBy(h => h.Occasion).ToArray();
 
-        public DateTime Start => Happenings.Select(h => h.Occasion).Min();
-        public DateTime End => Happenings.Select(h => h.Occasion).Max();
+        public DateTime Start => Events.Select(h => h.Occasion).Min();
+        public DateTime End => Events.Select(h => h.Occasion).Max();
 
         public TimeLines(params Participant[] participants)
         {

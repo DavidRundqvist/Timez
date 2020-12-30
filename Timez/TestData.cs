@@ -19,25 +19,21 @@ namespace Timez
             var ciri = new Participant("Ciri", Colors.Pink);
             //var calanthe = new Participant("Calanthe");
 
-            new Happening("Birth", DateTime.Parse("1971-01-10"), geralt);
-            new Happening("Trained", DateTime.Parse("1981-05-10"), geralt);
+            new Event("Birth", DateTime.Parse("1971-01-10"), geralt);
+            new Event("Trained", DateTime.Parse("1981-05-10"), geralt);
 
-            new Happening("Birth", new DateTime(1985, 08, 09), ciri);
+            new Event("Birth", new DateTime(1985, 08, 09), ciri);
 
-            //new Happening("Birth", new DateTime(1982, 04, 08), calanthe);
+            new Event("Sacking of Cintra", new DateTime(1995, 03, 02), ciri);
 
-            new Happening("Sacking of Cintra", new DateTime(1995, 03, 02), ciri);
+            new Event("Geralt & Ciri meet", new DateTime(1997, 10, 04), ciri, geralt);
+            new Event("Ciri Trained", new DateTime(2002, 01, 01), ciri, geralt);
 
-            new Happening("Geralt & Ciri meet", new DateTime(1997, 10, 04), ciri, geralt);
-            new Happening("Ciri Trained", new DateTime(2002, 01, 01), ciri, geralt);
+            new Event("Vilgefortz's betrayal", new DateTime(2003, 07, 21), ciri, geralt);
 
-            //new Happening("Wild hunt", new DateTime(2003, 05, 11), ciri);
+            new Event("Dubbed Sir Geralt of Rivia", new DateTime(2005, 09, 28), geralt);
 
-            new Happening("Vilgefortz's betrayal", new DateTime(2003, 07, 21), ciri, geralt);
-
-            new Happening("Dubbed Sir Geralt of Rivia", new DateTime(2005, 09, 28), geralt);
-
-            new Happening("Joins the Rats", new DateTime(2004, 08, 14), ciri);
+            new Event("Joins the Rats", new DateTime(2004, 08, 14), ciri);
 
             return new TimeLines(geralt, ciri);
         }
@@ -81,14 +77,14 @@ namespace Timez
     }
 
 
-    public class DesignHappening : HappeningViewModel
+    public class DesignEvent : EventViewModel
     {
 
-        public DesignHappening() : base(Marriage, 30, 450.0d)
+        public DesignEvent() : base(Marriage, 30, 450.0d)
         {
         }
 
-        static Happening Marriage = new Happening(
+        static Event Marriage = new Event(
             "David och Darja gifter sig", 
             new DateTime(2016, 06, 19), 
             new Participant("Darja", Colors.Red), 

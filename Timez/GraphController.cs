@@ -33,12 +33,12 @@ namespace Timez
         {
             _target.Children.Clear();
 
-            if (_source.Happenings.Length <= 1)
+            if (_source.Events.Length <= 1)
                 return;
 
             var start = _source.Start;
             var end = _source.End;
-            var happenings = _source.Happenings;
+            var events = _source.Events;
             var halfRowHeight = 150.0d;
             var participantsColumnWidth = 150;
 
@@ -59,8 +59,8 @@ namespace Timez
             _target.Width = (end - start).TotalSeconds * _pixelSpacing.Value + participantsColumnWidth + 50;
 
 
-            double GetX(Happening happening) {
-                return (happening.Occasion - start).TotalSeconds * _pixelSpacing.Value + participantsColumnWidth;
+            double GetX(Event @event) {
+                return (@event.Occasion - start).TotalSeconds * _pixelSpacing.Value + participantsColumnWidth;
             }
 
 
@@ -81,26 +81,26 @@ namespace Timez
 
 
             // Create happening views
-            var happeningViews = _source.Participants.SelectMany(participant => participant.Happenings.Select(happening => {
+            var eventViews = _source.Participants.SelectMany(participant => participant.Events.Select(@event => {
 
-                var x = GetX(happening);
+                var x = GetX(@event);
                 var y = participantRows[participant];
 
-                var vm = new HappeningViewModel(happening, x, y);
-                var happeningView = new HappeningView() { Happening = vm };
+                var vm = new EventViewModel(@event, x, y);
+                var eventView = new EventView() { Event = vm };
 
-                return (participant, happeningView);
+                return (participant, eventView);
             }))
-                .GroupBy(a => a.participant, a => a.happeningView)
+                .GroupBy(a => a.participant, a => a.eventView)
                 .ToDictionary(g => g.Key, g => g.ToArray());
 
 
 
             // Create time lines for each participant
-            var edges = _source.Participants.Where(p => p.Happenings.Length > 1).Select(p => {
-                var happenings = p.Happenings;
+            var edges = _source.Participants.Where(p => p.Events.Length > 1).Select(p => {
+                var events = p.Events;
 
-                var positions = happeningViews[p].Select(h => h.Happening.Position);
+                var positions = eventViews[p].Select(h => h.Event.Position);
                 var startPoint = positions.OrderBy(p => p.X).First();
                 var endPoint = positions.OrderBy(p => p.X).Last();
 
@@ -115,8 +115,8 @@ namespace Timez
 
             });
 
-            // Create connections between happenings
-            var conns = _source.Happenings.Where(h => h.Participants.Count > 1).Select(h => {
+            // Create connections between events
+            var conns = _source.Events.Where(h => h.Participants.Count > 1).Select(h => {
                 var ys = h.Participants.Select(p => participantRows[p]).ToArray();
                 var ymin = ys.OrderBy(y => y).First();
                 var ymax = ys.OrderBy(y => y).Last();
@@ -137,7 +137,7 @@ namespace Timez
 
 
             // Update target
-            foreach (var v in happeningViews.Values.SelectMany(h => h))
+            foreach (var v in eventViews.Values.SelectMany(h => h))
             {
                 _target.Children.Add(v);
             }

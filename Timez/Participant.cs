@@ -7,11 +7,11 @@ namespace Timez
 {
     public class Participant
     {
-        private readonly List<Happening> _happenings = new List<Happening>();
+        private readonly List<Event> _events = new List<Event>();
 
         public string Name { get; }
 
-        public Happening[] Happenings => _happenings.OrderBy(h => h.Occasion).ToArray();
+        public Event[] Events => _events.OrderBy(h => h.Occasion).ToArray();
 
         public Color Color { get; }
 
@@ -26,10 +26,10 @@ namespace Timez
         public Participant Happened(string name, string occassion, params Participant[] togetherWith)
         {
             var allParticipants = togetherWith.Concat(new[] { this }).ToArray();
-            var h = new Happening(name, occassion, allParticipants);
+            var h = new Event(name, occassion, allParticipants);
             foreach (var p in allParticipants)
             {
-                p._happenings.Add(h);
+                p._events.Add(h);
             }
             return this;
         }

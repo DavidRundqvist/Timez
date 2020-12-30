@@ -14,17 +14,17 @@ using System.Windows.Shapes;
 namespace Timez
 {
     /// <summary>
-    /// Interaction logic for HappeningView.xaml
+    /// Interaction logic for EventView.xaml
     /// </summary>
-    public partial class HappeningView : UserControl
+    public partial class EventView : UserControl
     {
-        public HappeningView()
+        public EventView()
         {
             InitializeComponent();
         }
 
-        public HappeningViewModel Happening {
-            get => this.DataContext as HappeningViewModel;
+        public EventViewModel Event {
+            get => this.DataContext as EventViewModel;
             set => this.DataContext = value;
         }
 

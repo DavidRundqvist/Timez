@@ -7,15 +7,15 @@ using System.Windows;
 
 namespace Timez
 {
-    public class HappeningViewModel : INotifyPropertyChanged
+    public class EventViewModel : INotifyPropertyChanged
     {
-        private readonly Happening _happening;
+        private readonly Event _event;
         private readonly double _x;
         private readonly double _y;
 
-        public HappeningViewModel(Happening happening, double x, double y)
+        public EventViewModel(Event @event, double x, double y)
         {
-            _happening = happening;
+            _event = @event;
             _x = x;
             _y = y;
         }
@@ -29,8 +29,8 @@ namespace Timez
         public Point Position => new Point(_x, _y);
 
 
-        public string Name => _happening.Name;
-        public string Date => _happening.Occasion.ToString("yyyy-MM-dd");
+        public string Name => _event.Name;
+        public string Date => _event.Occasion.ToString("yyyy-MM-dd");
 
 
 
