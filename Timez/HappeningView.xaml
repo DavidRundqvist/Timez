@@ -5,12 +5,17 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Timez"
              mc:Ignorable="d" 
-             Width="100"
-             d:DesignHeight="100" 
+             Width="{Binding Width}"
+             Canvas.Left="{Binding CanvasLeft}"
+             Canvas.Top="{Binding CanvasTop}"
+             
              d:DataContext="{d:DesignInstance Type=local:DesignHappening, IsDesignTimeCreatable=True}">
+    <!--<Border BorderBrush="Pink" BorderThickness="1">-->
     <StackPanel ToolTip="{Binding Name}">
-        <Ellipse x:Name="Circle" Fill="Transparent" Height="20" Width="20" StrokeThickness="5" Stroke="Black"></Ellipse>
+
+        <Border VerticalAlignment="Top" CornerRadius="10" BorderThickness="5" BorderBrush="Black" Height="20" Width="20"></Border>
         <TextBlock Margin="10" TextAlignment="Center" HorizontalAlignment="Center" MaxWidth="90" TextWrapping="Wrap" FontFamily="Goudy Old Style" Text="{Binding Date}"></TextBlock>
         <TextBlock TextAlignment="Center" HorizontalAlignment="Center" MaxWidth="90" TextWrapping="Wrap" FontFamily="Charlemagne Std" Text="{Binding Name}"></TextBlock>
     </StackPanel>
+    <!--</Border>-->
 </UserControl>

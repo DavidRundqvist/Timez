@@ -81,11 +81,20 @@ namespace Timez
     }
 
 
-    public class DesignHappening : Happening
+    public class DesignHappening : HappeningViewModel
     {
-        public DesignHappening() : base("David föds", new DateTime(1981, 01, 10))
+
+        public DesignHappening() : base(Marriage, 30, 450.0d)
         {
         }
+
+        static Happening Marriage = new Happening(
+            "David och Darja gifter sig", 
+            new DateTime(2016, 06, 19), 
+            new Participant("Darja", Colors.Red), 
+            new Participant("David", Colors.Blue));
+
+
     }
 
     public class DesignParticipant : Participant
